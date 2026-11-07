@@ -1,6 +1,6 @@
 from faster_whisper import WhisperModel
 
-model = WhisperModel (
+model = WhisperModel(
     "base",
     device="cpu",
     compute_type="int8"
@@ -8,13 +8,13 @@ model = WhisperModel (
 
 def transcribe_audio(audio_file):
     
-    segments, info=model.transcribe(
+    segments, info = model.transcribe(
         audio_file,
         beam_size=5,
         vad_filter=True
     )
     
-    result = []
+    results = [] 
     
     for segment in segments:
         results.append({

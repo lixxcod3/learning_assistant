@@ -1,6 +1,6 @@
-
 import subprocess
 from pathlib import Path
+import imageio_ffmpeg
 
 SUPPORTED_FORMATS = {
     ".mp3", ".wav", ".m4a", ".aac",
@@ -22,8 +22,11 @@ def extract_audio(input_file, output_dir="data"):
 
     output_file = output_dir / f"{input_file.stem}.wav"
 
+    # Fetch the exact path to the bundled FFmpeg executable
+    ffmpeg_exe = imageio_ffmpeg.get_ffmpeg_exe()
+
     command = [
-        "ffmpeg",
+        ffmpeg_exe,
         "-y",
         "-i", str(input_file),
         "-vn",
