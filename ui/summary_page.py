@@ -1,10 +1,12 @@
-python -c "from pathlib import Path; p=Path('ui/summary_page.py'); p.write_text('''import streamlit as st
+import streamlit as st
 
 def render_summary_page():
     st.title('Lecture Summary')
 
     if 'ai_materials' not in st.session_state or 'transcript' not in st.session_state:
-        st.warning('No data found. Please go to the Upload page and process a file first.')
+        st.warning(
+            'No data found. Please go to the Upload page and process a file first.'
+        )
         return
 
     materials = st.session_state['ai_materials']
@@ -32,8 +34,12 @@ def render_summary_page():
         st.write(transcript.get('full_text', 'No transcript available.'))
 
         st.markdown('### Timestamped Segments')
+
         segments = transcript.get('segments', [])
 
         for seg in segments:
-            st.caption(f\\\"[{seg['start']}s - {seg['end']}s] {seg['text']}\\\")
-''', encoding='utf-8'); print('File successfully written! Lines:', len(p.read_text(encoding='utf-8').splitlines()))"
+            start = seg.get('start', 0)
+            end = seg.get('end', 0)
+            text = seg.get('text', '')
+
+            st.caption(f'[{start}s - {end}s] {text}')
