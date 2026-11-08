@@ -10,7 +10,6 @@ def render_flashcard_page():
         st.warning("Please open a lecture on the Upload page first.")
         return
 
-    # Use temporary flashcards if they exist, otherwise load saved ones
     flashcards = st.session_state.get('temp_flashcards', [])
     
     if not flashcards:
@@ -37,28 +36,31 @@ def render_flashcard_page():
 
         st.divider()
         
-        # Save Warning Logic
         if not st.session_state.get('fc_saved'):
             st.warning("⚠️ These flashcards haven't been saved yet.")
             
-            if st.button("💾 Save Flashcards"):
-                # Save to DB
-                update_lecture_materials(lecture_id, flashcards=flashcards)
-                # Save to Folder
-                lec_title = st.session_state.get('active_lecture_title', 'unknown')
-                fc_path = os.path.join("data", "lectures", lec_title, "flashcards.json")
-                with open(fc_path, "w") as f:
-                    json.dump(flashcards, f, indent=4)
-                    
-                st.session_state['fc_saved'] = True
-                st.session_state['fc_warning'] = None
-                st.rerun()
-
-            col1, col2 = st.columns(2)
+            col1, col2, col3 = st.columns(3)
             with col1:
-                if st.button("🔄 Retake (Without Saving)"): st.session_state['fc_warning'] = 'retake'
+                if st.button("💾 Save Flashcards"):
+                    update_lecture_materials(lecture_id, flashcards=flashcards)
+                    lec_title = st.session_state.get('active_lecture_title', 'unknown')
+                    folder_dir = os.path.join("data", "lectures", lec_title)
+                    os.makedirs(folder_dir, exist_ok=True)
+                    fc_path = os.path.join(folder_dir, "flashcards.json")
+                    with open(fc_path, "w") as f:
+                        json.dump(flashcards, f, indent=4)
+                        
+                    st.session_state['fc_saved'] = True
+                    st.session_state['fc_warning'] = None
+                    st.rerun()
+
             with col2:
-                if st.button("✨ Generate New (Discard Current)"): st.session_state['fc_warning'] = 'new'
+                if st.button("🔄 Retake (Without Saving)"): 
+                    st.session_state['fc_warning'] = 'retake'
+                    
+            with col3:
+                if st.button("✨ Generate New (Discard Current)"): 
+                    st.session_state['fc_warning'] = 'new'
                 
             if st.session_state.get('fc_warning'):
                 st.error("Are you sure you want to discard these flashcards? They will be lost.")
@@ -73,19 +75,44 @@ def render_flashcard_page():
                         st.info("Discarded. Go to the Summary page to generate a new set.")
         else:
             st.success("✅ Flashcards are saved in your lecture folder.")
-            if st.button("🔄 Retake"):
-                st.session_state['fc_idx'] = 0
-                st.session_state['fc_correct'] = 0
-                st.rerun()
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.button("🔄 Retake"):
+                    st.session_state['fc_idx'] = 0
+                    st.session_state['fc_correct'] = 0
+                    st.rerun()
+            with col2:
+                if st.button("✨ Generate New (Clear Current)"):
+                    st.session_state['temp_flashcards'] = []
+                    st.session_state['fc_saved'] = False
+                    st.rerun()
         return
 
-    # --- ACTIVE CARD LOGIC ---
+    # --- ACTIVE CARD LOGIC (Dark Glass Theme) ---
     card = flashcards[idx]
     st.markdown(f"### Card {idx + 1} of {len(flashcards)}")
     
     st.markdown("""
         <style>
-        .fc-box { border: 2px solid #4CAF50; border-radius: 10px; padding: 40px; text-align: center; font-size: 24px; font-weight: bold; background-color: #f9f9f9; color: black; min-height: 200px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;}
+        .fc-box { 
+            border: 1px solid rgba(255, 255, 255, 0.2); 
+            border-radius: 16px; 
+            padding: 40px; 
+            text-align: center; 
+            font-size: 24px; 
+            font-weight: bold; 
+            background: rgba(255, 255, 255, 0.1); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: #ffffff; 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            min-height: 200px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            margin-bottom: 20px;
+        }
         </style>
     """, unsafe_allow_html=True)
 

@@ -1,3 +1,4 @@
+import streamlit as st
 from database.db import get_user_profile, get_unlocked_badges, unlock_badge
 
 BADGES = {
@@ -8,13 +9,17 @@ BADGES = {
 }
 
 def check_and_award_badges(perfect_score=False):
-    profile = get_user_profile()
-    unlocked_badges = get_unlocked_badges()
+    if 'user_id' not in st.session_state:
+        return []
+        
+    user_id = st.session_state['user_id']
+    profile = get_user_profile(user_id)
+    unlocked_badges = get_unlocked_badges(user_id)
     newly_unlocked = []
 
     def award(badge_name):
         if badge_name not in unlocked_badges:
-            unlock_badge(badge_name)
+            unlock_badge(user_id, badge_name)
             newly_unlocked.append(badge_name)
 
     if profile["quizzes_completed"] >= 1:
@@ -28,8 +33,8 @@ def check_and_award_badges(perfect_score=False):
 
     return newly_unlocked
 
-def get_all_badges_status():
-    unlocked_badges = get_unlocked_badges()
+def get_all_badges_status(user_id):
+    unlocked_badges = get_unlocked_badges(user_id)
     status_list = []
     
     for name, description in BADGES.items():

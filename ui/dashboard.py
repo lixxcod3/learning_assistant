@@ -7,8 +7,16 @@ from gamification.badges import get_all_badges_status
 def render_dashboard_page():
     st.title("👤 My Profile & Files")
     
-    # --- Profile Stats ---
-    profile = get_user_profile()
+    # --- Authentication Check ---
+    if 'user_id' not in st.session_state:
+        st.warning("You must sign in first.")
+        return
+
+    user_id = st.session_state['user_id']
+    st.write(f"Welcome back, **{st.session_state.get('username', 'User')}**!")
+    
+    # --- Profile Stats (FIXED: passing user_id) ---
+    profile = get_user_profile(user_id)
     stats = calculate_level_stats(profile['xp'])
     
     col1, col2, col3 = st.columns(3)
@@ -51,7 +59,12 @@ def render_dashboard_page():
 
     # --- Badges ---
     st.subheader("🎖️ Achievement Badges")
-    badges = get_all_badges_status()
+    
+    try:
+        badges = get_all_badges_status(user_id)
+    except TypeError:
+        badges = get_all_badges_status() 
+        
     b_col1, b_col2 = st.columns(2)
     for idx, badge in enumerate(badges):
         col = b_col1 if idx % 2 == 0 else b_col2
