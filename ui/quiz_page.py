@@ -1,6 +1,22 @@
 import streamlit as st
-import os, json
+import os
+import json
 from database.db import update_lecture_materials
+
+def render_quiz_page():
+    st.title("🎮 Knowledge Quiz")
+    if 'last_feedback' not in st.session_state:
+        st.session_state['last_feedback'] = None
+    if 'q_idx' not in st.session_state:
+        st.session_state['q_idx'] = 0
+    if 'q_correct' not in st.session_state:
+        st.session_state['q_correct'] = 0
+    if 'q_done' not in st.session_state:
+        st.session_state['q_done'] = False
+    if 'q_saved' not in st.session_state:
+        st.session_state['q_saved'] = False
+
+    lecture_id = st.session_state.get('active_lecture_id')
 
 def render_quiz_page():
     st.title("🎮 Knowledge Quiz")

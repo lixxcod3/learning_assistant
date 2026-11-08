@@ -1,0 +1,57 @@
+[
+    {
+        "question": "What term describes the main component of the digestive system, which includes the elementary canal?",
+        "options": [
+            "Accessory structures",
+            "Elementary canal",
+            "Oral cavity",
+            "Pharynx"
+        ],
+        "answer": "Elementary canal",
+        "explanation": "The term 'elementary canal' refers to the main component of the digestive system, which includes the mouth, pharynx, esophagus, stomach, small intestines, and large intestines."
+    },
+    {
+        "question": "Which of the following is NOT an accessory component of the digestive system?",
+        "options": [
+            "Tongue",
+            "Pancreas",
+            "Liver",
+            "Small Intestines"
+        ],
+        "answer": "Small Intestines",
+        "explanation": "The small intestines are part of the elementary canal, not an accessory component."
+    },
+    {
+        "question": "What is the primary role of the digestive system according to the lecture?",
+        "options": [
+            "Secretion",
+            "Absorption",
+            "Excretion",
+            "Digestion"
+        ],
+        "answer": "Digestion",
+        "explanation": "The primary role of the digestive system is digestion, breaking down food into nutrients."
+    },
+    {
+        "question": "Which of the following is a function of the digestive system that involves moving food through the tract?",
+        "options": [
+            "Ingestion",
+            "Mixing",
+            "Excretion",
+            "Secretion"
+        ],
+        "answer": "Mixing",
+        "explanation": "Mixing, along with propulsion, is a function of the digestive system that involves moving food through the tract via peristalsis."
+    },
+    {
+        "question": "Which organ is NOT mentioned in the lecture as an accessory digestive structure?",
+        "options": [
+            "Gall Bladder",
+            "Pancreas",
+            "Liver",
+            "Kidney"
+        ],
+        "answer": "Kidney",
+        "explanation": "The kidney is not mentioned as an accessory digestive structure in the lecture, though it is a vital organ, it is not part of the digestive system."
+    }
+]

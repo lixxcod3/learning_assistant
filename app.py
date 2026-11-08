@@ -1,13 +1,14 @@
 import streamlit as st
 import base64
 import os
-from database.db import init_db, get_all_lectures
+from database.db import init_db, get_all_lectures_full
 
 from ui.upload_page import render_upload_page
 from ui.summary_page import render_summary_page
 from ui.flashcard_page import render_flashcard_page
 from ui.quiz_page import render_quiz_page
 from ui.dashboard import render_dashboard_page
+from ui.components import render_lecture_folder
 
 init_db()
 
@@ -23,7 +24,35 @@ def inject_custom_css():
 
     custom_css = f"""
     <style>
-    /* 1. Global Background Setup */
+    /* =========================================================
+       ULTRA-CLEAN NOTION FOLDER ITEMS
+       ========================================================= */
+    div[data-testid="stExpanderDetails"] div[data-testid="stVerticalBlock"] {{
+        gap: 0.1rem !important; 
+    }}
+    
+    /* Strip ALL backgrounds, borders, and shadows from buttons inside folders */
+    div[data-testid="stExpanderDetails"] .stButton > button {{
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        height: auto !important;
+        min-height: 32px !important;
+        padding: 4px 8px !important;
+        border-radius: 4px !important;
+        font-weight: 400 !important;
+        color: #cccccc !important;
+        justify-content: flex-start !important; 
+    }}
+    
+    div[data-testid="stExpanderDetails"] .stButton > button:hover {{
+        background: rgba(255, 255, 255, 0.1) !important;
+        color: #ffffff !important;
+    }}
+    
+    /* =========================================================
+       GENERAL UI 
+       ========================================================= */
     .stApp {{
         {bg_css}
         background-size: cover;
@@ -33,7 +62,6 @@ def inject_custom_css():
     }}
     header[data-testid="stHeader"] {{ background: transparent !important; box-shadow: none !important; }}
     
-    /* 2. Full-Screen Dark Overlay */
     .stApp::before {{
         content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
         background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); z-index: 0;
@@ -45,9 +73,6 @@ def inject_custom_css():
     }}
     div.block-container {{ padding-top: 2rem !important; }}
 
-    /* =========================================================
-       3. HORIZONTAL TOP NAV BAR (LIQUID GLASS) 
-       ========================================================= */
     div[data-testid="stHorizontalBlock"]:first-of-type {{
         background: rgba(255, 255, 255, 0.05);
         backdrop-filter: blur(25px);
@@ -60,10 +85,6 @@ def inject_custom_css():
         margin-bottom: 2rem;
     }}
     
-    /* =========================================================
-       RADIO BUTTON CSS FIX (VERTICAL QUIZ CHOICES)
-       ========================================================= */
-    /* Aggressively hide the native radio dots everywhere */
     div[data-testid="stRadio"] div[role="radio"] > div:first-child,
     div[data-testid="stRadio"] div[data-baseweb="radio"] > div:first-child {{
         display: none !important; width: 0 !important; height: 0 !important; opacity: 0 !important;
@@ -72,17 +93,14 @@ def inject_custom_css():
     div.row-widget.stRadio {{ margin: 0 !important; padding: 0 !important; }}
     div.row-widget.stRadio > div {{ padding: 0 !important; border: none !important; background: transparent !important; }}
 
-    /* Convert ONLY the Navbar Radio Group to a Horizontal Row */
     div[data-testid="stHorizontalBlock"]:first-of-type div[role="radiogroup"] {{
         display: flex; flex-direction: row; justify-content: flex-end; gap: 35px; width: 100%; background: transparent;
     }}
     
-    /* Make standard radio buttons (like Quiz and Login) stack vertically */
     section[data-testid="stMain"] div[role="radiogroup"]:not(div[data-testid="stHorizontalBlock"]:first-of-type div[role="radiogroup"]) {{
         display: flex; flex-direction: column; gap: 12px; width: 100%;
     }}
 
-    /* Active State styling for Quiz/Login Radio options (since dots are hidden) */
     section[data-testid="stMain"] div[role="radiogroup"]:not(div[data-testid="stHorizontalBlock"]:first-of-type div[role="radiogroup"]) label:has(input:checked) {{
         background: rgba(255, 255, 255, 0.15) !important;
         border-radius: 8px;
@@ -94,7 +112,6 @@ def inject_custom_css():
         transition: all 0.3s ease;
     }}
     
-    /* Style the Navigation Tabs specifically */
     div[data-testid="stHorizontalBlock"]:first-of-type div[role="radiogroup"] label {{
         cursor: pointer; position: relative; padding: 10px 0px; margin: 0; background: transparent !important;
     }}
@@ -103,28 +120,17 @@ def inject_custom_css():
     }}
     div[data-testid="stHorizontalBlock"]:first-of-type div[role="radiogroup"] label:hover p {{ color: #ffffff !important; }}
     
-    /* Active Nav Tab Text Styling */
     div[data-testid="stHorizontalBlock"]:first-of-type div[role="radiogroup"] label:has(div[aria-checked="true"]) p,
     div[data-testid="stHorizontalBlock"]:first-of-type div[role="radiogroup"] label:has(input:checked) p {{
         color: #ffffff !important; font-weight: 700; text-shadow: 0 0 10px rgba(255,255,255,0.5);
     }}
 
-    /* =========================================================
-       4. SIDEBAR FOLDER SYSTEM & GENERAL UI
-       ========================================================= */
     [data-testid="stSidebar"] {{
         background-color: rgba(15, 15, 15, 0.4) !important;
         backdrop-filter: blur(5px) !important;
         border-right: 1px solid rgba(255, 255, 255, 0.15);
     }}
-    [data-testid="stSidebar"] .stButton > button {{
-        width: 100%; justify-content: flex-start; text-align: left;
-        background: transparent !important; border: none !important; box-shadow: none !important;
-        border-radius: 8px !important; padding: 10px 15px !important; color: #ccc !important; font-weight: 400 !important;
-    }}
-    [data-testid="stSidebar"] .stButton > button:hover {{
-        background: rgba(255, 255, 255, 0.1) !important; color: white !important; transform: none !important;
-    }}
+
     .stTextInput input, .stSelectbox > div > div > select, .stTextArea textarea {{
         background-color: rgba(255, 255, 255, 0.08) !important; backdrop-filter: blur(12px) !important;
         border: 1px solid rgba(255, 255, 255, 0.2) !important; border-radius: 10px !important; color: white !important;
@@ -148,26 +154,20 @@ def inject_custom_css():
     """
     st.markdown(custom_css, unsafe_allow_html=True)
 
-# --- Button Callback Functions ---
 def handle_nav_click(target_page):
     st.session_state['nav_radio'] = target_page
-    st.session_state['global_notification'] = None
-
-def dismiss_notification():
-    st.session_state['global_notification'] = None
 
 def main():
     st.set_page_config(page_title="LectureMind", page_icon="💡", layout="wide", initial_sidebar_state="expanded")
     inject_custom_css()
 
-    # --- HORIZONTAL LIQUID GLASS NAVBAR ---
     nav_col, = st.columns(1)
     with nav_col:
         pages_dict = {
             "Upload": render_upload_page,
             "Summary": render_summary_page,
             "Flashcards": render_flashcard_page,
-            "Quiz": render_quiz_page,  # CHANGED FROM "Knowledge"
+            "Quiz": render_quiz_page, 
             "Dashboard": render_dashboard_page
         }
         
@@ -176,19 +176,6 @@ def main():
             
         st.radio("Navigation", list(pages_dict.keys()), horizontal=True, label_visibility="collapsed", key="nav_radio")
 
-    # --- GLOBAL NOTIFICATION SYSTEM ---
-    if st.session_state.get('global_notification'):
-        notif = st.session_state['global_notification']
-        st.success(f"✨ {notif['msg']}")
-        
-        c1, c2, _ = st.columns([2, 2, 6])
-        with c1:
-            st.button(f"🚀 Go to {notif['type']}", on_click=handle_nav_click, args=(notif['type'],))
-        with c2:
-            st.button("❌ Dismiss", on_click=dismiss_notification)
-        st.divider()
-
-    # --- SIDEBAR: LECTUREMIND LOGO & FOLDER BROWSER ---
     st.sidebar.markdown(
         "<div style='font-size: 26px; font-weight: 700; margin-bottom: 20px; color: white;'>💡 LectureMind</div>", 
         unsafe_allow_html=True
@@ -197,18 +184,21 @@ def main():
     st.sidebar.title("📂 My Lectures")
     
     if 'user_id' in st.session_state:
-        lectures = get_all_lectures(st.session_state['user_id'])
+        lectures = get_all_lectures_full(st.session_state['user_id'])
+        
         if lectures:
-            for lec in lectures:
-                btn_label = f"📄 {lec['title']}"
+            with st.sidebar: 
+                for lec in lectures[:10]:
+                    render_lecture_folder(lec, prefix="side")
                 
-                if st.sidebar.button(btn_label, key=f"lec_{lec['id']}"):
-                    st.session_state['active_lecture_id'] = lec['id']
-                    st.session_state['active_lecture_title'] = lec['title']
-                    st.session_state.pop('temp_flashcards', None)
-                    st.session_state.pop('temp_quiz', None)
-                    st.session_state['global_notification'] = None
-                    st.rerun()
+            if len(lectures) > 10:
+                st.sidebar.divider()
+                st.sidebar.button(
+                    f"Show More ({len(lectures) - 10} hidden)", 
+                    use_container_width=True, 
+                    on_click=handle_nav_click, 
+                    args=("Dashboard",)
+                )
         else:
             st.sidebar.info("No lectures saved yet. Upload an audio file to get started!")
         
@@ -220,7 +210,6 @@ def main():
     else:
         st.sidebar.warning("Sign in via the Upload tab to view your folders.")
 
-    # --- RENDER SELECTED PAGE ---
     pages_dict[st.session_state['nav_radio']]()
 
 if __name__ == "__main__":

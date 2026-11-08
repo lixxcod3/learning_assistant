@@ -1,6 +1,21 @@
 import streamlit as st
-import os, json
+import os
+import json
 from database.db import update_lecture_materials
+
+def render_flashcard_page():
+    st.title("📇 Interactive Flashcards")
+    
+    if 'fc_idx' not in st.session_state:
+        st.session_state['fc_idx'] = 0
+    if 'fc_flipped' not in st.session_state:
+        st.session_state['fc_flipped'] = False
+    if 'fc_correct' not in st.session_state:
+        st.session_state['fc_correct'] = 0
+    if 'fc_saved' not in st.session_state:
+        st.session_state['fc_saved'] = False
+
+    lecture_id = st.session_state.get('active_lecture_id')
 
 def render_flashcard_page():
     st.title("📇 Interactive Flashcards")
