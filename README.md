@@ -155,7 +155,3 @@ The application will automatically initialize `data/progress.db` on first launch
 * **Person 1:** AI Pipeline & Prompt Engineering (ASR transcription, LLM summarization, JSON schema enforcement for quizzes & flashcards).
 * **Person 2:** Database Architecture & Gamification Logic (SQLite schema design, user authentication, badge unlocking rules).
 * **Person 3 (Lead Integrator):** Full-Stack Integration, State Architecture & UI/UX Engineering (Streamlit session-state synchronization, custom liquid-glass & Notion CSS injection, Base64 SFX engine, modal workflows, and cross-module debugging).
-
-```
-
-```
