@@ -147,11 +147,3 @@ The application will automatically initialize `data/progress.db` on first launch
 * **LLM Context Window Constraints:** Very long lectures (2+ hours) can exceed the token context window of smaller local LLMs, requiring transcript chunking or truncation during summary and quiz extraction.
 * **Local-First Ephemeral Storage:** Media files and the SQLite database (`progress.db`) are stored directly on the local filesystem. Deploying to ephemeral cloud containers (such as Streamlit Community Cloud) without attaching a persistent volume or migrating to PostgreSQL/S3 will result in data resets upon container sleep.
 * **Prototype Authentication:** User credentials in `db.py` are designed for local, single-machine profiles. Production deployment requires integrating cryptographic password hashing (e.g., `bcrypt`) and token-based session cookies.
-
----
-
-## 👥 Contributors & Roles
-
-* **Person 1:** AI Pipeline & Prompt Engineering (ASR transcription, LLM summarization, JSON schema enforcement for quizzes & flashcards).
-* **Person 2:** Database Architecture & Gamification Logic (SQLite schema design, user authentication, badge unlocking rules).
-* **Person 3 (Lead Integrator):** Full-Stack Integration, State Architecture & UI/UX Engineering (Streamlit session-state synchronization, custom liquid-glass & Notion CSS injection, Base64 SFX engine, modal workflows, and cross-module debugging).
