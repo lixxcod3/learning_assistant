@@ -1,0 +1,57 @@
+[
+    {
+        "question": "What is the primary function of the digestive system as described in the lecture?",
+        "options": [
+            "To produce body heat",
+            "To break down food into nutrients",
+            "To regulate body temperature",
+            "To filter out waste products"
+        ],
+        "answer": "To break down food into nutrients",
+        "explanation": "The lecture states that the digestive system breaks down food into micronutrients and absorbs them into the bloodstream."
+    },
+    {
+        "question": "Which of the following is not part of the elementary canal according to the lecture?",
+        "options": [
+            "Liver",
+            "Pharynx",
+            "Esophagus",
+            "Anus"
+        ],
+        "answer": "Liver",
+        "explanation": "The liver is mentioned as an accessory digestive structure, not part of the elementary canal."
+    },
+    {
+        "question": "What does the term 'peristalsis' refer to in the context of the digestive system?",
+        "options": [
+            "The process of producing digestive enzymes",
+            "The movement that mixes and propels food through the tract",
+            "The secretion of mucus",
+            "The absorption of nutrients"
+        ],
+        "answer": "The movement that mixes and propels food through the tract",
+        "explanation": "Peristalsis is described as the process of mixing and pushing food through the tract."
+    },
+    {
+        "question": "Which of the following is a primary site for nutrient absorption, according to the lecture?",
+        "options": [
+            "Liver",
+            "Small Intestines",
+            "Large Intestines",
+            "Pharynx"
+        ],
+        "answer": "Small Intestines",
+        "explanation": "The lecture states that the small intestines will be one of the primary sites for absorption when it comes to nutrients."
+    },
+    {
+        "question": "What are the two types of digestion mentioned in the lecture?",
+        "options": [
+            "Mechanical and electrical",
+            "Mechanical and chemical",
+            "Biological and chemical",
+            "Chemical and electrical"
+        ],
+        "answer": "Mechanical and chemical",
+        "explanation": "The lecture mentions both mechanical and chemical digestion as distinct processes."
+    }
+]
